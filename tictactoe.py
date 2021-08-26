@@ -4,13 +4,19 @@ Tic Tac Toe Player
 
 import math
 import copy
-import ipdb
 from typing import final
 
 X = "X"
 O = "O"
 EMPTY = None
 
+# Game scores
+X_WINS = 1
+O_WINS = -1
+DRAW = 0
+
+MIN_VALUE = -2
+MAX_VALUE = 2
 
 def initial_state():
     """
@@ -104,11 +110,11 @@ def utility(board):
     """
     w = winner(board)
     if w == X:
-        return 1
+        return X_WINS
     elif w == O:
-        return -1
+        return O_WINS
     else:
-        return 0
+        return DRAW
 
 
 def minimax(board):
@@ -118,20 +124,15 @@ def minimax(board):
     nextMove = player(board)
     
     if nextMove == X:
-        print("X turn")
         v, action = maxValue(board)
         return action
     else:
-        # ipdb.set_trace()
-        print("O turn")
         v, action = minValue(board)
         return action
 
 def maxValue(board):
 
-    # ipdb.set_trace()
-
-    value = -2
+    value = MIN_VALUE
     finalAction = (0, 0)
 
     if terminal(board):
@@ -139,7 +140,9 @@ def maxValue(board):
 
     for action in actions(board):
         minV, a = minValue(result(board, action))
-        if minV == 1:
+
+        # Since 1 is the max possible score, if we find that for max player no need to search further
+        if minV == X_WINS:
             return minV, action
         elif minV > value:
             finalAction = action
@@ -149,9 +152,7 @@ def maxValue(board):
 
 def minValue(board):
 
-    # ipdb.set_trace()
-
-    value = 2
+    value = MAX_VALUE
     finalAction = (0, 0)
 
     if terminal(board):
@@ -159,53 +160,12 @@ def minValue(board):
 
     for action in actions(board):
         maxV, a = maxValue(result(board, action))
-        # if board == [[X, EMPTY, EMPTY],
-        #     [X, X, EMPTY],
-        #     [O, EMPTY, O]]:
-        #     print("Outer function")
-        if maxV == -1:
+
+        # Since -1 is the min possible score, if we find that for min player no need to search further
+        if maxV == O_WINS:
             return maxV, action
         elif maxV < value:
             finalAction = action
             value = maxV
 
     return value, finalAction
-
-# if __name__ == "__main__":
-#     # ipdb.set_trace()
-#     board = initial_state()
-#     # print(player(board))
-#     # print(actions(board))
-#     # board = result(board, (0,1))
-#     # print(actions(board))
-#     # print(board)
-#     # print(player(board))
-#     # board = result(board, (2,1))
-#     # print(actions(board))
-#     # print(board)
-#     # print(player(board))
-#     # board = result(board, (0,2))
-#     # print(actions(board))
-#     # print(board)
-#     # print(player(board))
-#     # board = result(board, (2,2))
-#     # print(actions(board))
-#     # print(board)
-#     # print(terminal(board))
-#     # board = result(board, (0,0))
-#     # print(actions(board))
-#     # print(terminal(board))
-#     # board = result(board, (1,0))
-#     # print(actions(board))
-#     # board = result(board, (1,1))
-#     # print(actions(board))
-#     # board = result(board, (1,2))
-#     # print(actions(board))
-#     # board = result(board, (2,0))
-#     # print(actions(board))
-#     # print(terminal(board))
-#     board =[[EMPTY, EMPTY, O],
-#             [O, X, EMPTY],
-#             [X, EMPTY, EMPTY]]
-#     # print(winner(board))
-#     print(minimax(board))
