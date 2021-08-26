@@ -50,7 +50,17 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
 
-    if board[action[0]][action[1]] != EMPTY:
+    i = action[0]
+    if indexOutOfBounds(i, board):
+        raise Exception("Invalid index")
+
+    j = action[1]
+    arr = board[i]
+    if indexOutOfBounds(j, arr):
+        raise Exception("Invalid index")
+
+    pos = arr[j]
+    if pos != EMPTY:
         raise Exception("Invalid action")
     
     nextMove = player(board)
@@ -60,6 +70,8 @@ def result(board, action):
     
     return newBoard
 
+def indexOutOfBounds(index, arr):
+    return index not in range(-len(arr), len(arr))
 
 def winner(board):
     """
@@ -121,6 +133,10 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
+
+    if terminal(board):
+        return None
+
     nextMove = player(board)
     
     if nextMove == X:
